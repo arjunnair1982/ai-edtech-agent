@@ -1,0 +1,43 @@
+name: Test SendGrid Email
+
+on:
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Python
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip
+
+      - name: Send test email via SendGrid SMTP
+        run: |
+          pip install secure-smtplib || true  # in case it's already available
+
+          echo "import smtplib
+from email.mime.text import MIMEText
+from os import environ
+
+msg = MIMEText('✅ This is a test email sent from GitHub Actions via SendGrid SMTP.')
+msg['Subject'] = 'SendGrid SMTP Test from GitHub Actions'
+msg['From'] = environ['FROM_EMAIL']
+msg['To'] = environ['TO_EMAILS']
+
+with smtplib.SMTP(environ['SMTP_HOST'], int(environ['SMTP_PORT'])) as server:
+    server.starttls()
+    server.login(environ['SMTP_USER'], environ['SMTP_PASS'])
+    server.sendmail(msg['From'], msg['To'].split(','), msg.as_string())
+
+print('✅ Email sent successfully.')
+" > send_test_email.py
+
+          python3 send_test_email.py
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          TO_EMAILS: ${{ secrets.TO_EMAILS }}
