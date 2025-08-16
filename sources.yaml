@@ -1,0 +1,23 @@
+rss:
+  # Edtech & education-first
+  - "https://www.edsurge.com/feed"
+  - "https://www.classcentral.com/report/feed/"
+  - "https://techcrunch.com/tag/education/feed/"
+
+  # Targeted Google News queries (reliable RSS and very current)
+  - "https://news.google.com/rss/search?q=%22AI%22+education&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=edtech+AI&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=%22AI+tutor%22+OR+%22AI+teaching%22&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=%22generative+AI%22+education+OR+edtech&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=K-12+AI+OR+%22AI+in+schools%22&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=%22learning+platform%22+AI+OR+%22LMS%22+AI&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=university+AI+pilot+OR+campus+AI+deployment&hl=en-US&gl=US&ceid=US:en"
+
+  # Funding/launch signals (broader, your prefilter/LLM will narrow to edtech)
+  - "https://news.google.com/rss/search?q=edtech+funding+OR+%22raises%22+AI&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=edtech+launch+%22AI%22&hl=en-US&gl=US&ceid=US:en"
+
+  # Optional general tech feeds that sometimes carry edtech AI (your prefilter will screen)
+  - "https://techcrunch.com/feed/"
+  - "https://venturebeat.com/category/ai/feed/"       # if available; common WP pattern
+  - "https://thenextweb.com/feed"                     # general tech; prefilter will ignore non-edtech

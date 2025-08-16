@@ -1,0 +1,125 @@
+2025-08-14 18:28:51,283 | INFO | Processing 3 RSS feeds...
+2025-08-14 18:28:52,284 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-08-14 18:28:53,295 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-08-14 18:28:54,270 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-08-14 18:39:26,201 | INFO | Processing 3 RSS feeds...
+2025-08-14 18:39:31,153 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:31,154 | INFO | Retrying request to /chat/completions in 0.472611 seconds
+2025-08-14 18:39:33,006 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:33,007 | INFO | Retrying request to /chat/completions in 0.979167 seconds
+2025-08-14 18:39:34,268 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:35,658 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:35,659 | INFO | Retrying request to /chat/completions in 0.435903 seconds
+2025-08-14 18:39:36,618 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:36,618 | INFO | Retrying request to /chat/completions in 0.866949 seconds
+2025-08-14 18:39:37,717 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:38,750 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:38,751 | INFO | Retrying request to /chat/completions in 0.462236 seconds
+2025-08-14 18:39:40,123 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-14 18:39:40,124 | INFO | Retrying request to /chat/completions in 0.971398 seconds
+2025-08-14 18:39:42,434 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 17:53:20,000 | INFO | Processing 3 RSS feeds...
+2025-08-15 17:53:21,203 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-08-15 17:53:22,183 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-08-15 17:53:24,689 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 404 Not Found"
+2025-08-15 17:57:17,485 | INFO | Force test enabled: sending dummy item without calling OpenAI.
+2025-08-15 17:57:22,417 | INFO | Sent test email.
+2025-08-15 18:11:44,795 | INFO | Force test enabled: sending dummy item without calling OpenAI.
+2025-08-15 18:11:45,911 | INFO | Sent test email.
+2025-08-15 18:21:58,045 | INFO | Processing 3 RSS feeds...
+2025-08-15 18:22:03,396 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:03,397 | INFO | Retrying request to /chat/completions in 0.486261 seconds
+2025-08-15 18:22:04,326 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:04,328 | INFO | Retrying request to /chat/completions in 0.857617 seconds
+2025-08-15 18:22:05,428 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:06,505 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:06,506 | INFO | Retrying request to /chat/completions in 0.403487 seconds
+2025-08-15 18:22:07,199 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:07,200 | INFO | Retrying request to /chat/completions in 0.974565 seconds
+2025-08-15 18:22:09,070 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:10,088 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:10,088 | INFO | Retrying request to /chat/completions in 0.384723 seconds
+2025-08-15 18:22:11,159 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:22:11,160 | INFO | Retrying request to /chat/completions in 0.795598 seconds
+2025-08-15 18:22:12,779 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:31:51,855 | INFO | Processing 3 RSS feeds...
+2025-08-15 18:31:54,793 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:31:56,939 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:31:59,090 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:31:59,484 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:31:59,485 | INFO | Retrying request to /chat/completions in 20.000000 seconds
+2025-08-15 18:32:21,426 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:23,434 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:25,591 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-08-15 18:32:25,592 | INFO | Retrying request to /chat/completions in 20.000000 seconds
+2025-08-15 18:32:47,789 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:49,981 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:52,990 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:55,267 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:57,981 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 18:32:58,018 | INFO | No relevant items today.
+2025-08-15 19:05:23,417 | INFO | Processing 3 RSS feeds...
+2025-08-15 19:05:23,738 | INFO | No relevant items today.
+2025-08-15 19:06:21,024 | INFO | Processing 3 RSS feeds...
+2025-08-15 19:06:21,275 | INFO | No relevant items today.
+2025-08-15 19:09:24,324 | INFO | Processing 3 RSS feeds...
+2025-08-15 19:09:29,031 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:09:29,051 | INFO | LLM decision: False | one_sentence="The article discusses President Trump's efforts to deregulate the space industry."
+2025-08-15 19:09:29,272 | INFO | No relevant items today.
+2025-08-15 19:09:29,272 | INFO | Sending fallback with 1 candidate(s).
+2025-08-15 19:25:34,150 | INFO | Processing 15 RSS feeds...
+2025-08-15 19:25:41,331 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:41,346 | INFO | LLM decision: False | one_sentence='The article lists programming courses but does not focus on AI in education.'
+2025-08-15 19:25:45,009 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:45,019 | INFO | LLM decision: False | one_sentence='The article lists top courses for learning applied AI and ML.'
+2025-08-15 19:25:47,934 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:47,937 | INFO | LLM decision: True | one_sentence='OpenAI launches Study Mode in ChatGPT to enhance critical thinking skills for students.'
+2025-08-15 19:25:51,688 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:51,691 | INFO | LLM decision: True | one_sentence='Google Classroom introduced an AI feature for generating quiz questions to assist teachers.'
+2025-08-15 19:25:55,770 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:55,781 | INFO | LLM decision: True | one_sentence='A survey shows increased usage of ChatGPT among teens for schoolwork, highlighting its acceptance and potential pitfalls.'
+2025-08-15 19:25:58,751 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:25:58,754 | INFO | LLM decision: False | one_sentence='The article discusses the ongoing impact of AI on education.'
+2025-08-15 19:26:00,508 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:00,511 | INFO | LLM decision: False | one_sentence='The article discusses privacy concerns related to the adoption of AI in schools.'
+2025-08-15 19:26:02,664 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:02,666 | INFO | LLM decision: True | one_sentence='Ohio State hires a new chief information officer to enhance its AI education initiatives.'
+2025-08-15 19:26:05,443 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:05,503 | INFO | LLM decision: True | one_sentence='The article discusses the integration of education and workforce training in the national AI strategy.'
+2025-08-15 19:26:08,661 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:08,678 | INFO | LLM decision: True | one_sentence='Mark Cuban Foundation partners with Turbo AI to enhance educational technology access.'
+2025-08-15 19:26:10,743 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:10,747 | INFO | LLM decision: True | one_sentence='School leaders outline EdTech and AI priorities for 2025 at the Bett report.'
+2025-08-15 19:26:13,800 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:13,803 | INFO | LLM decision: True | one_sentence='The article discusses trends in AI technology impacting the education sector.'
+2025-08-15 19:26:16,946 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:16,953 | INFO | LLM decision: True | one_sentence='Babson College and Vollee have launched MathBot, an AI tutor aimed at enhancing business analytics education.'
+2025-08-15 19:26:19,202 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:19,205 | INFO | LLM decision: True | one_sentence="Efekta Education Group's AI tutor Addi has been rolled out to over 1 million users in Brazil."
+2025-08-15 19:26:21,513 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:21,516 | INFO | LLM decision: True | one_sentence="UT Austin is implementing a new personalized AI tutor named 'Sage' this fall."
+2025-08-15 19:26:23,531 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:23,553 | INFO | LLM decision: True | one_sentence='Wild Zebra raises $2M to expand its AI tutor to thousands of students.'
+2025-08-15 19:26:27,793 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:27,796 | INFO | LLM decision: True | one_sentence='The article discusses statistics and trends related to AI in education for 2025.'
+2025-08-15 19:26:29,777 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:29,788 | INFO | LLM decision: True | one_sentence='The article discusses the impact of AI on student learning and study habits.'
+2025-08-15 19:26:31,802 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:31,811 | INFO | LLM decision: False | one_sentence='The article discusses ethical and regulatory challenges of Generative AI in education.'
+2025-08-15 19:26:36,655 | INFO | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-15 19:26:36,658 | INFO | LLM decision: True | one_sentence='Udemy launches an AI-powered platform in Arabic to expand its reach in the Middle East.'
+2025-08-15 19:26:37,399 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:37,613 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:39,137 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:39,347 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:40,505 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:41,306 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:42,134 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:42,517 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:42,729 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:42,918 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:43,606 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:44,078 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:44,618 | WARNING | LLM call cap reached (20); skipping.
+2025-08-15 19:26:46,184 | INFO | Sent 19 item(s).
+2025-08-15 19:26:46,185 | INFO | Summary: feeds=15 candidates=33 llm_calls=20 findings=19

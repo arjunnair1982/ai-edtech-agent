@@ -1,0 +1,10 @@
+openai>=1.40
+feedparser
+requests
+trafilatura
+python-dotenv
+pydantic
+pandas
+apscheduler
+lxml_html_clean
+pyyaml
