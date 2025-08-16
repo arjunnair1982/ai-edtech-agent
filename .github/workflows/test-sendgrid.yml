@@ -4,43 +4,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  send_email:
+  send-test-email:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install SendGrid
-        run: pip install sendgrid
-
-      - name: Send test email
+      - name: Send test email with curl
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          SENDGRID_FROM_EMAIL: ${{ secrets.SENDGRID_FROM_EMAIL }}
-          SENDGRID_TO_EMAIL: ${{ secrets.SENDGRID_TO_EMAIL }}
+          TO_EMAIL: ${{ secrets.TEST_TO_EMAIL }}
+          FROM_EMAIL: ${{ secrets.TEST_FROM_EMAIL }}
         run: |
-          python -c "
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-
-message = Mail(
-    from_email=os.environ['SENDGRID_FROM_EMAIL'],
-    to_emails=os.environ['SENDGRID_TO_EMAIL'],
-    subject='✅ GitHub Actions SendGrid Test Email',
-    html_content='<strong>This is a test email sent from GitHub Actions via SendGrid.</strong>'
-)
-
-try:
-    sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
-    response = sg.send(message)
-    print(f'Status code: {response.status_code}')
-except Exception as e:
-    print(f'Error: {e}')
-"
+          curl --request POST \
+            --url https://api.sendgrid.com/v3/mail/send \
+            --header "Authorization: Bearer $SENDGRID_API_KEY" \
+            --header "Content-Type: application/json" \
+            --data '{
+              "personalizations": [{
+                "to": [{"email": "'"$TO_EMAIL"'"}],
+                "subject": "✅ SendGrid Test from GitHub Actions"
+              }],
+              "from": {"email": "'"$FROM_EMAIL"'"},
+              "content": [{
+                "type": "text/plain",
+                "value": "This is a test email sent via SendGrid through GitHub Actions."
+              }]
+            }'
