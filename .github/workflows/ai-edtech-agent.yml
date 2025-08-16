@@ -1,0 +1,62 @@
+name: AI EdTech Agent
+
+on:
+  schedule:
+    - cron: "30 7 * * *"  # 08:30 Lisbon time
+  workflow_dispatch:
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system dependencies
+        run: sudo apt-get update -y && sudo apt-get install -y libxml2-dev libxslt1-dev
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create .env file
+        run: |
+          cat > .env << 'ENV'
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL=${{ secrets.OPENAI_MODEL }}
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_USER=${{ secrets.SMTP_USER }}
+          SMTP_PASS=${{ secrets.SMTP_PASS }}
+          FROM_EMAIL=${{ secrets.FROM_EMAIL }}
+          TO_EMAIL=${{ secrets.TO_EMAIL }}
+          FROM_NAME=${{ secrets.FROM_NAME }}
+          DEBUG_FILTER=${{ secrets.DEBUG_FILTER }}
+          DEBUG_DECISIONS=${{ secrets.DEBUG_DECISIONS }}
+          SEND_TOP_CANDIDATES_IF_EMPTY=${{ secrets.SEND_TOP_CANDIDATES_IF_EMPTY }}
+          MAX_LLM_CALLS=${{ secrets.MAX_LLM_CALLS }}
+          ENV
+
+      - name: Run agent
+        run: python -u agent.py --max-per-feed 10
+
+      - name: Commit seen.json and run.log
+        if: ${{ always() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p data
+          touch data/seen.json data/run.log
+          git add -A data/seen.json data/run.log
+          if ! git diff --cached --quiet; then
+            git commit -m "Update seen.json and run.log [skip ci]"
+            git push
+          else
+            echo "No changes to commit."
