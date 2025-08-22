@@ -2,30 +2,32 @@
 # -*- coding: utf-8 -*-
 
 """
-AI EdTech Agent (single-file)
+AI EdTech Agent (single-file, dedupe+memory enhanced)
 
 What it does:
 - Fetches RSS items
 - Extracts article text (robust HTTP retries)
 - Filters for AI-in-education news (regex-safe, edtech-focused)
 - Uses OpenAI to classify & summarize (with model cap & fallbacks)
-- Dedupe & email a digest (SendGrid SMTP-friendly)
+- Dedupe (URL normalization + title + partial content hash)
+- Optional ignore list (manual “never show again”)
+- Email a digest (SendGrid SMTP-friendly)
 - Optional fallback email if no items pass LLM
 
 Env flags / settings (in .env):
   OPENAI_API_KEY=...
   OPENAI_MODEL=gpt-4o-mini
   MAX_LLM_CALLS=20
-  DEBUG_FILTER=1                   # show why items passed/blocked prefilter
-  DEBUG_DECISIONS=1                # show LLM relevance decisions
-  SEND_TOP_CANDIDATES_IF_EMPTY=1   # email last 3 keyword matches if nothing passes
+  DEBUG_FILTER=1
+  DEBUG_DECISIONS=1
+  SEND_TOP_CANDIDATES_IF_EMPTY=1
   FROM_NAME="AI EdTech Agent"
   SMTP_HOST=smtp.sendgrid.net
   SMTP_PORT=587
   SMTP_USER=apikey
   SMTP_PASS=... (SendGrid API key)
-  FROM_EMAIL=your@email
-  TO_EMAIL=your@email
+  FROM_EMAIL=you@domain
+  TO_EMAIL=you@domain
 """
 
 import os
@@ -46,17 +48,18 @@ from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from urllib.parse import urlparse, urlunparse, parse_qsl
 
 # --------------------------
 # Setup & constants
 # --------------------------
-# Load .env next to this file (robust even if run from elsewhere)
 load_dotenv(dotenv_path=Path(__file__).with_name(".env"))
 
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(exist_ok=True)
 SEEN_PATH = DATA_DIR / "seen.json"
 LOG_PATH = DATA_DIR / "run.log"
+IGNORE_PATH = DATA_DIR / "ignore.txt"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -159,6 +162,73 @@ def trim_for_llm(txt: str, limit: int = 5000) -> str:
     return (txt or "")[:limit]
 
 # --------------------------
+# Dedupe helpers (NEW)
+# --------------------------
+def normalize_url(url: str) -> str:
+    """Strip fragments and tracking params like utm_* so cosmetic URL changes don't bypass dedupe."""
+    u = urlparse(url)
+    clean_qs = [(k, v) for k, v in parse_qsl(u.query) if not k.lower().startswith("utm_")]
+    return urlunparse((u.scheme, u.netloc, u.path, "", "&".join(f"{k}={v}" for k, v in clean_qs), ""))
+
+def content_hash(text: str) -> str:
+    """Hash of article content for stronger identity when we can extract it."""
+    return hashlib.sha256((text or "").strip().encode("utf-8")).hexdigest()
+
+def item_key(url: str, title: str, text: str = "") -> str:
+    """
+    Strong identity:
+    - normalized url
+    - title (lowercased, trimmed)
+    - first 16 chars of content hash (if available)
+    """
+    norm = normalize_url(url).lower()
+    ttl = (title or "").strip().lower()
+    ch = content_hash(text)[:16] if text else ""
+    base = f"{norm}::{ttl}::{ch}"
+    return hashlib.sha256(base.encode("utf-8")).hexdigest()
+
+def load_seen() -> dict:
+    """
+    Returns dict of {key: iso_timestamp}. Handles old formats gracefully.
+    """
+    if SEEN_PATH.exists():
+        try:
+            data = json.loads(SEEN_PATH.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                return data
+            if isinstance(data, list):
+                # migrate old list of keys -> dict with timestamps
+                now = dt.datetime.now().isoformat()
+                return {k: now for k in data}
+        except Exception:
+            pass
+    return {}
+
+def save_seen(seen: dict) -> None:
+    SEEN_PATH.write_text(json.dumps(seen, indent=2), encoding="utf-8")
+
+def load_ignore_list() -> list:
+    if IGNORE_PATH.exists():
+        return [ln.strip().lower() for ln in IGNORE_PATH.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    return []
+
+IGNORE_LIST = load_ignore_list()
+
+# Optional: expire very old seen entries (disabled by default)
+def purge_old_seen(seen: dict, days: int = 0) -> dict:
+    if days <= 0:
+        return seen
+    cutoff = dt.datetime.now() - dt.timedelta(days=days)
+    out = {}
+    for k, ts in seen.items():
+        try:
+            if dt.datetime.fromisoformat(ts) >= cutoff:
+                out[k] = ts
+        except Exception:
+            out[k] = dt.datetime.now().isoformat()
+    return out
+
+# --------------------------
 # Data models
 # --------------------------
 class Finding(BaseModel):
@@ -182,20 +252,8 @@ class LLMResp(BaseModel):
     why_it_matters: str
 
 # --------------------------
-# Sources & dedupe
+# Sources & dedupe (legacy helpers kept for compat)
 # --------------------------
-def load_sources() -> dict:
-    """Load sources.yaml if present; else defaults."""
-    path = Path("sources.yaml")
-    if path.exists():
-        import yaml
-        try:
-            with path.open("r", encoding="utf-8") as f:
-                return (yaml.safe_load(f) or DEFAULT_SOURCES)
-        except Exception:
-            logger.warning("Failed to parse sources.yaml, using defaults.")
-    return DEFAULT_SOURCES
-
 def fetch_rss_entries(feed_url: str, limit: int = 40) -> Iterable[dict]:
     d = feedparser.parse(feed_url)
     for e in d.entries[:limit]:
@@ -207,19 +265,17 @@ def fetch_rss_entries(feed_url: str, limit: int = 40) -> Iterable[dict]:
             "source": feed_url
         }
 
-def url_hash(url: str) -> str:
-    return hashlib.sha256(url.encode("utf-8")).hexdigest()
-
-def load_seen() -> dict:
-    if SEEN_PATH.exists():
+def load_sources() -> dict:
+    """Load sources.yaml if present; else defaults."""
+    path = Path("sources.yaml")
+    if path.exists():
+        import yaml
         try:
-            return json.loads(SEEN_PATH.read_text(encoding="utf-8"))
+            with path.open("r", encoding="utf-8") as f:
+                return (yaml.safe_load(f) or DEFAULT_SOURCES)
         except Exception:
-            return {}
-    return {}
-
-def save_seen(seen: dict) -> None:
-    SEEN_PATH.write_text(json.dumps(seen, indent=2), encoding="utf-8")
+            logger.warning("Failed to parse sources.yaml, using defaults.")
+    return DEFAULT_SOURCES
 
 # --------------------------
 # Prefilter (regex-safe, edtech-focused)
@@ -253,7 +309,6 @@ def looks_like_candidate(title: str, text: str) -> bool:
         )
     return ok
 
-# Heuristic fallback for titles (whole-word; avoids 'ai' in 'aided')
 def looks_like_launch_fund(title: str) -> bool:
     t = (title or "").lower()
     return any(re.search(rf"\b{p}\b", t) for p in AI_TERMS) and any(
@@ -394,11 +449,15 @@ def send_email(subject: str, body: str) -> None:
 
     import smtplib
     from email.mime.text import MIMEText
+    from email.utils import formataddr
 
     msg = MIMEText(body)
     msg["Subject"] = subject
-    msg["From"] = f"{FROM_NAME} <{FROM_EMAIL}>"
+    msg["From"] = formataddr((FROM_NAME, FROM_EMAIL))
     msg["To"] = TO_EMAIL
+    # Helpful deliverability headers (optional):
+    msg["Reply-To"] = FROM_EMAIL
+    msg["List-Unsubscribe"] = f"<mailto:unsubscribe@{FROM_EMAIL.split('@')[-1]}>"
 
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
         s.starttls()
@@ -428,7 +487,7 @@ def run_agent(force_test: bool = False, max_per_feed: int = 40) -> None:
         logger.info("Sent test email.")
         return
 
-    seen = load_seen()
+    seen = purge_old_seen(load_seen(), days=0)  # set days>0 to expire old entries
     found: List[Finding] = []
     candidates: List[Finding] = []
     sources = load_sources()
@@ -442,8 +501,19 @@ def run_agent(force_test: bool = False, max_per_feed: int = 40) -> None:
             title = e["title"] or "(no title)"
             if not url:
                 continue
-            key = url_hash(url)
-            if key in seen:
+
+            # Manual ignore (title/url contains any phrase in ignore.txt)
+            blob_for_ignore = f"{title}\n{url}".lower()
+            if any(s in blob_for_ignore for s in IGNORE_LIST):
+                pre_key = item_key(url, title, "")
+                seen[pre_key] = dt.datetime.now().isoformat()
+                if DEBUG_FILTER:
+                    logger.info(f"FILTER: ignored by ignore.txt | title={title!r}")
+                continue
+
+            # EARLY KEY: URL+title (no content yet). Skip if we’ve already evaluated it.
+            pre_key = item_key(url, title, "")
+            if pre_key in seen:
                 continue
 
             html = fetch_html(url)
@@ -453,12 +523,17 @@ def run_agent(force_test: bool = False, max_per_feed: int = 40) -> None:
             if len(text) < 400:
                 if DEBUG_FILTER:
                     logger.info(f"FILTER: too-short text (<400 chars) | title={title!r}")
-                # do not mark seen; we might fetch successfully next run
+                # don't mark seen; might succeed next run if site was flaky
+                continue
+
+            # STRONG KEY: include content hash segment
+            key = item_key(url, title, text)
+            if key in seen:
                 continue
 
             if not looks_like_candidate(title, text):
-                # mark seen so we don't reconsider this specific item again
-                seen[key] = dt.datetime.now().isoformat()
+                # mark as seen so we don't reconsider reposts of non-relevant items
+                seen[pre_key] = dt.datetime.now().isoformat()
                 continue
 
             # Keep a lightweight candidate for potential fallback digest
@@ -472,16 +547,14 @@ def run_agent(force_test: bool = False, max_per_feed: int = 40) -> None:
 
             # LLM analysis (with fallback)
             item = llm_extract_and_summarize(title, text)
-            decision_made = True  # we reached LLM/heuristic
 
             if item:
                 item.url = url
                 item.source = feed
                 found.append(item)
 
-            # Mark seen only if a decision was made (avoid losing items to transient LLM errors)
-            if decision_made:
-                seen[key] = dt.datetime.now().isoformat()
+            # Mark seen using the strong key since we made a decision
+            seen[key] = dt.datetime.now().isoformat()
 
     if found:
         email_body = format_email(found)
@@ -495,13 +568,11 @@ def run_agent(force_test: bool = False, max_per_feed: int = 40) -> None:
             email_body = format_email(fallback)
             send_email("AI-in-Education Daily (fallback)", email_body)
 
-    # End-of-run summary for quick visibility
     logger.info(f"Summary: feeds={len(rss_list)} candidates={len(candidates)} llm_calls={_llm_calls} findings={len(found)}")
-
     save_seen(seen)
 
 def main():
-    parser = argparse.ArgumentParser(description="AI EdTech Agent")
+    parser = argparse.ArgumentParser(description="AI EdTech Agent (dedupe+memory enhanced)")
     parser.add_argument("--force-test", action="store_true",
                         help="Send a dummy item to test email & pipeline (no OpenAI calls)")
     parser.add_argument("--max-per-feed", type=int, default=40,

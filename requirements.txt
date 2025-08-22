@@ -8,3 +8,4 @@ pandas
 apscheduler
 lxml_html_clean
 pyyaml
+urllib3>=2.0.0
